@@ -34,7 +34,7 @@ const nextNode: NextNode = (currentNode, entry, isLeaf) => {
     val,
     parents: nodeParents,
     path: nodePath,
-    isLeaf: isLeaf(val),
+    isLeaf: isLeaf(val, currentNode),
     isRoot: false,
   }
 }
@@ -47,7 +47,7 @@ const nextNode: NextNode = (currentNode, entry, isLeaf) => {
 export const walker = (obj: object, walkFn: WalkFn, options: Options = {}) => {
   const { postOrder, jsonCompat, traverse = defTraverse } = options
   // A leaf is a node that can't be traversed
-  const isLeaf = _.negate(traverse)
+  const isLeaf: Options['traverse'] = (...args) => !traverse(...args)
   // Recursively walk object
   const _walk = (node: Node): void => {
     // Preorder
@@ -55,7 +55,7 @@ export const walker = (obj: object, walkFn: WalkFn, options: Options = {}) => {
       walkFn(node)
     }
     const { val } = node
-    const next = traverse(val) || []
+    const next = traverse(val, node) || []
     for (const entry of Object.entries(next)) {
       _walk(nextNode(node, entry, isLeaf))
     }

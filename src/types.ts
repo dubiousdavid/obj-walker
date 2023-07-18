@@ -1,7 +1,7 @@
 export interface Options {
   postOrder?: boolean
   jsonCompat?: boolean
-  traverse?(val: any): any
+  traverse?(val: any, node?: Node): any
 }
 
 export interface WalkOptions extends Options {
@@ -61,7 +61,7 @@ export type Flatten = (
 export type NextNode = (
   currentNode: Node,
   entry: [string, any],
-  isLeaf: (x: any) => boolean
+  isLeaf: (x: any, node: Node) => boolean
 ) => Node
 
 export interface CompactOptions {
